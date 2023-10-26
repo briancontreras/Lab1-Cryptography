@@ -1,4 +1,9 @@
 package default_package;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class SDES {
 
 	public static void main(String[] args) {
@@ -20,6 +25,36 @@ public class SDES {
 		System.out.println("0000011111"+"      "+"00000000           "+SDES("0000011111","00000000"));
 		System.out.println("0000011111"+"      "+"11111111           "+SDES("0000011111","11111111"));
 		System.out.println("1000101110"+"      "+"11111111           "+SDES("1000101110","01010000"));
+
+
+		System.out.println("1000101110"+"      "+"00111000           "+SDES("1000101110","00111000"));
+		System.out.println("1000101110"+"      "+"00001100           "+SDES("1000101110","00001100"));
+		System.out.println("0010011111"+"      "+"11111100           "+SDES("0010011111","11111100"));
+		System.out.println("0010011111"+"      "+"01110011           "+SDES("0010011111","01110011"));
+		
+//		Below is the code used to find the Rawkey with the cipher text
+		
+//		List<String> table = new ArrayList<>();
+//		while(true) {
+//			Random ran = new Random();
+//			StringBuilder sb = new StringBuilder();
+//			for(int i = 0 ; i<8;i++) {
+//				if(ran.nextInt(1-0+1)+0 == 1) {
+//					sb.append("1");
+//				}
+//				else {
+//					sb.append("0");
+//				}
+//			}
+//			if(!table.contains(sb.toString())) {
+//				table.add(sb.toString());
+//				if("10010000".equals(SDES("0010011111",sb.toString()))) {
+//					System.out.println("TRUE: "+ sb.toString());
+//				}
+//			}
+//		}
+
+		
 	}
 	public static String leftShift(String k, int s){
 		//create String Builder to split number
