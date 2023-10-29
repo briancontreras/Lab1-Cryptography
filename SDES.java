@@ -1,4 +1,4 @@
-package default_package;
+package project1;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,33 +26,18 @@ public class SDES {
 		System.out.println("0000011111"+"      "+"11111111           "+SDES("0000011111","11111111"));
 		System.out.println("1000101110"+"      "+"11111111           "+SDES("1000101110","01010000"));
 
-
+		System.out.println("\nSolved with Decryption: 1st row(Decryption)   2nd row(Encryption)");
+		System.out.println("1000101110"+"      "+SDESDecryption("1000101110","00011100")+"           "+ "00011100");
 		System.out.println("1000101110"+"      "+"00111000           "+SDES("1000101110","00111000"));
+		System.out.println("1000101110"+"      "+SDESDecryption("1000101110","11000010")+"           "+ "11000010");
 		System.out.println("1000101110"+"      "+"00001100           "+SDES("1000101110","00001100"));
+		System.out.println("0010011111"+"      "+SDESDecryption("0010011111","10011101")+"           "+ "10011101");
 		System.out.println("0010011111"+"      "+"11111100           "+SDES("0010011111","11111100"));
+		System.out.println("0010011111"+"      "+SDESDecryption("0010011111","10010000")+"           "+ "10010000");
 		System.out.println("0010011111"+"      "+"01110011           "+SDES("0010011111","01110011"));
+
+
 		
-//		Below is the code used to find the Rawkey with the cipher text
-		
-//		List<String> table = new ArrayList<>();
-//		while(true) {
-//			Random ran = new Random();
-//			StringBuilder sb = new StringBuilder();
-//			for(int i = 0 ; i<8;i++) {
-//				if(ran.nextInt(1-0+1)+0 == 1) {
-//					sb.append("1");
-//				}
-//				else {
-//					sb.append("0");
-//				}
-//			}
-//			if(!table.contains(sb.toString())) {
-//				table.add(sb.toString());
-//				if("10010000".equals(SDES("0010011111",sb.toString()))) {
-//					System.out.println("TRUE: "+ sb.toString());
-//				}
-//			}
-//		}
 
 		
 	}
@@ -302,6 +287,70 @@ public class SDES {
 		return finalAnswer;
 			
 
+	}
+	public static String SDESDecryption(String rawKey, String cipherText) {
+		String key10 = p10(rawKey);
+		String shiftedKey = leftShift(key10,1);
+		String roundKey1 = p8(shiftedKey);
+		String shiftedKey2 = leftShift(shiftedKey,2);
+		String roundKey2 = p8(shiftedKey2);
+		
+		String firstIP = IP(cipherText);
+		StringBuilder left = new StringBuilder();
+		StringBuilder right = new StringBuilder();
+		for(int i = 0; i < 4;i++) {
+			left.append(firstIP.charAt(i));
+			right.append(firstIP.charAt(i+4));
+		}
+		
+		String firstEP = EP(right.toString(),-1);
+		
+		String firstXOR =XOR(roundKey2,firstEP);
+		StringBuilder leftXOR = new StringBuilder();
+		StringBuilder rightXOR = new StringBuilder();
+		for(int i = 0; i < 4;i++) {
+			leftXOR.append(firstXOR.charAt(i));
+			rightXOR.append(firstXOR.charAt(i+4));
+		}
+		
+		String firstSBox = SBox(leftXOR.toString(),0);
+		String secondSBox = SBox(rightXOR.toString(),1);
+		
+		StringBuilder combinedFirstSbox = new StringBuilder();
+		combinedFirstSbox.append(firstSBox);
+		combinedFirstSbox.append(secondSBox);
+		
+		String firstP4 = P4(combinedFirstSbox.toString());
+		
+		String finalRoundXOR = XOR(firstP4,left.toString());
+		
+		StringBuilder secondRoundSwitch = new StringBuilder();
+		secondRoundSwitch.append(right.toString());
+		secondRoundSwitch.append((finalRoundXOR));
+		//end of first round
+		
+		String secondLeft = right.toString();
+		String secondRight = finalRoundXOR;
+		
+		String secondEP = EP(secondRight,-1);
+		
+		String secondXOR = XOR(roundKey1,secondEP);
+		StringBuilder secondLeftXOR = new StringBuilder();
+		StringBuilder secondRightXOR = new StringBuilder();
+		for(int i = 0; i < 4;i++) {
+			secondLeftXOR.append(secondXOR.charAt(i));
+			secondRightXOR.append(secondXOR.charAt(i+4));
+		}
+		
+		String secondLeftSBox = SBox(secondLeftXOR.toString(),0);
+		String secondRightSBox = SBox(secondRightXOR.toString(),1);
+		
+		String finalSbox = P4(secondLeftSBox + secondRightSBox);
+		String finalLeft = XOR(secondLeft,finalSbox);
+		
+		String answer = reverseIP(finalLeft+secondRight);
+		
+		return answer;
 	}
 
 }
