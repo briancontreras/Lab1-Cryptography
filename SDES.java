@@ -1,4 +1,4 @@
-package project1;
+package default_package;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import java.util.Random;
 public class SDES {
 
 	public static void main(String[] args) {
+		
 		System.out.println("           All listed TestCases");
 		System.out.println("Raw Key        Plaintext          CipherTest");
 		String firstTestCase = SDES("0000000000","10101010");
@@ -224,6 +225,12 @@ public class SDES {
 		}
 		return sb.toString();
 	}
+	public static String reverseString(String s) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(s);
+		return sb.reverse().toString();
+		
+	}
 	public static String SDES(String rawKey, String plainText) {
 
 			
@@ -351,6 +358,14 @@ public class SDES {
 		String answer = reverseIP(finalLeft+secondRight);
 		
 		return answer;
+	}
+	public static String tripleSDES(String key1, String key2, String plainText) {
+		String firstSDES = SDES(key1,plainText);
+		String secondSDES = SDES(key2,firstSDES);
+		String reverseSecondSDES = reverseString(secondSDES);
+		String lastSDES = SDES(key1,reverseSecondSDES);
+		
+		return lastSDES;
 	}
 
 }
